@@ -3,38 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>Daily Activity Tracker</title>
-
+    
     <style>
-        body {
-            font-family: Arial;
-            margin: 20px;
-        }
+    body {
+        font-family: Arial;
+        margin: 0;
+        height: 100vh;
 
-        .form-group {
-            margin-bottom: 10px;
-        }
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f4f4f4;
+    }
 
-        label {
-            display: inline-block;
-            width: 150px;
-        }
+    .container {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        width: 350px;
+    }
 
-        input {
-            padding: 5px;
-        }
+    .form-group {
+        margin-bottom: 10px;
+    }
 
-        button {
-            padding: 6px 10px;
-            margin-top: 10px;
-        }
+    label {
+        display: inline-block;
+        width: 150px;
+    }
 
-        li {
-            margin-top: 5px;
-        }
-    </style>
+    input {
+        padding: 5px;
+        width: 150px;
+    }
+
+    button {
+        padding: 6px 10px;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    li {
+        margin-top: 5px;
+    }
+</style>
 </head>
 <body>
 
+<div class="container">
     <h2>Daily Activity Tracker</h2>
 
     <div class="form-group">
@@ -52,7 +69,8 @@
     <h3 id="total">Total: 0 Menit (0 Aktivitas)</h3>
 
     <ul id="list"></ul>
-
-    <script src="js/script.js"></script>
+</div>
+    
+<script src="js/script.js"></script>
 </body>
 </html>
