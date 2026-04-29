@@ -1,95 +1,100 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Activity Tracker</title>
-
-    <style>
-    body {
-        font-family: Arial;
-        margin: 0;
-        height: 100vh;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #f4f4f4;
+  <meta charset="utf-8">
+  <title>Student Productivity Analyzer</title>
+  <style>
+    body { font-family: Arial; margin: 24px; max-width: 700px; }
+    input, button { padding: 8px; margin: 4px; }
+    #list, #result {
+      border: 1px solid #ddd; padding: 10px; margin-top: 10px; white-space: pre-line;
     }
-
-    .container {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-
-        width: 90%;
-        max-width: 400px;
-    }
-
-    .form-group {
-        margin-bottom: 10px;
-    }
-
-    label {
-        width: 100%;
-        margin-bottom: 5px;
-    }
-
-    input {
-        padding: 8px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    button {
-        width: 100%;
-        padding: 10px;
-    }
-
-    li {
-        margin-top: 5px;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
-
-    @media (max-width: 480px) {
-        .container {
-            padding: 15px;
-        }
-
-        h2 {
-            font-size: 20px;
-        }
-    }
-</style>
-
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Daily Activity Tracker</h2>
+<h2>Student Productivity Analyzer</h2>
+<p>Masukkan aktivitas harian untuk dianalisis oleh AI.</p>
 
-    <div class="form-group">
-        <label for="activity">Aktivitas:</label>
-        <input type="text" id="activity" placeholder="Nama aktivitas">
-    </div>
+<input id="act" placeholder="contoh: belajar, game">
+<input id="min" type="number" placeholder="menit">
 
-    <div class="form-group">
-        <label for="duration">Durasi (menit):</label>
-        <input type="number" id="duration" placeholder="Durasi">
-    </div>
+<button onclick="tambah()">Tambah</button>
+<button onclick="analisis()">Analisis AI</button>
 
-    <button id="btnTambah">Tambah</button>
+<p id="total">Total: 0 menit</p>
 
-    <h3 id="total">Total: 0 Menit (0 Aktivitas)</h3>
+<h3>Aktivitas:</h3>
+<div id="list">Belum ada data</div>
 
-    <ul id="list"></ul>
-</div>
+<h3>Analisis AI:</h3>
+<div id="result">Belum dianalisis</div>
 
-<script src="js/script.js"></script>
+<script>
+let data = [];
+
+function render() {
+  let total = 0;
+  let text = "";
+
+  data.forEach((d, i) => {
+    total += d.m;
+    text += (i+1) + ". " + d.a + " - " + d.m + " menit\n";
+  });
+
+  document.getElementById("total").innerText =
+    "Total: " + total + " menit";
+
+  document.getElementById("list").innerText =
+    text || "Belum ada data";
+}
+
+function tambah() {
+  const a = document.getElementById("act").value;
+  const m = Number(document.getElementById("min").value);
+
+  if (!a || !m) return alert("Isi data dengan benar");
+
+  data.push({ a, m });
+
+  document.getElementById("act").value = "";
+  document.getElementById("min").value = "";
+
+  render();
+}
+
+async function analisis() {
+  if (data.length === 0) return;
+
+  document.getElementById("result").innerText = "Menganalisis...";
+
+  const daftar = data.map((d, i) =>
+    (i+1) + ". " + d.a + " - " + d.m + " menit"
+  ).join("\n");
+
+  try {
+    const res = await fetch("https://activity-ai-backend.vercel.app/api/analyze", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        activities: daftar
+      })
+    });
+
+    const json = await res.json();
+
+    document.getElementById("result").innerText =
+      json.result || json.error;
+
+  } catch {
+    document.getElementById("result").innerText = "Gagal koneksi ke AI";
+  }
+}
+
+render();
+</script>
+
 </body>
 </html>
